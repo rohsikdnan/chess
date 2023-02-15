@@ -266,7 +266,7 @@ function canMove() {
 
 function isLegalMove() {
     let type = selectedPiece.getAttribute('type')
-
+    if (type == 'knight') return true
     if (src.x === dest.x) {
         for (let i = Math.min(src.y, dest.y) + 1; i < Math.max(src.y, dest.y); i++) {
             if (board[src.x][i] !== null) return false
@@ -286,7 +286,6 @@ function isLegalMove() {
 
     return true;
 }
-
 
 
 
