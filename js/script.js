@@ -1,8 +1,10 @@
 // Create the chess board
 const chessBoard = document.getElementById('board');
-
+let selectedPiece = null;
 // Create the chess pieces
 const pcs = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
+let src, dest;
+let turn = 'white'
 
 const board = [
     ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
@@ -24,20 +26,19 @@ for (let i = 0; i < 8; i++) {
         const square = document.createElement('div');
         square.setAttribute('class', 'square');
 
-        // Color the squares
         if ((i + j) % 2 === 0) {
             square.style.backgroundColor = '#fff';
         } else {
             square.style.backgroundColor = '#999';
         }
 
-        // Add the chess pieces to the board
         if (i === 0 || i === 7) {
             const piece = document.createElement('div');
             piece.setAttribute('class', `piece ${i === 0 ? 'black' : 'white'} ${pcs[j]}`);
             piece.setAttribute('type', `${pcs[j]}`);
             square.appendChild(piece);
         }
+
         if (i === 1 || i === 6) {
             const piece = document.createElement('div');
             piece.setAttribute('class', `piece ${i === 1 ? 'black' : 'white'} pawn`);
@@ -52,9 +53,6 @@ for (let i = 0; i < 8; i++) {
 
 let squares = document.querySelectorAll('.square')
 
-let selectedPiece = null;
-let src, dest;
-
 squares.forEach((square, index) => {
     square.addEventListener('click', () => {
         let i = Math.floor(index / 8);
@@ -65,13 +63,17 @@ squares.forEach((square, index) => {
         if (!piece && !selectedPiece) return;
 
         if (!selectedPiece) {
-            selectedPiece = piece
-            square.classList.add('selected')
-            src = {
-                x: i,
-                y: j
+            if (piece.classList.contains(turn)) {
+                selectedPiece = piece;
+                square.classList.add('selected')
+                src = {
+                    x: i,
+                    y: j
+                }
+                console.log('src', src)
             }
-            console.log('src', src)
+
+
         } else if (selectedPiece === piece) {
             square.classList.remove("selected");
             selectedPiece = null;
@@ -84,20 +86,29 @@ squares.forEach((square, index) => {
 
             console.log('dest', dest)
             if (canMove() && isLegalMove()) {
+                if (piece && piece.classList.contains(turn)) return
+                if (selectedPiece.classList.contains('pawn') && piece && !piece.classList.contains(turn)) return
+
+                // console.log(selectedPiece)
                 const fromSquare = selectedPiece.closest(".square");
-                square.innerHTML = ''
+                square.innerHTML = '';
                 square.appendChild(selectedPiece);
                 fromSquare.classList.remove("selected");
                 selectedPiece = null;
                 board[dest.x][dest.y] = board[src.x][src.y];
                 board[src.x][src.y] = null;
-                clg(board)
+                turn = (turn === 'white') ? 'black' : 'white';
+                clg(turn)
+                // clg(board)
             }
         }
 
     })
 })
 
+function checkMate() {
+    let king = document.querySelector(`${turn}.king`)
+}
 
 
 // const pieces = {
@@ -209,9 +220,12 @@ squares.forEach((square, index) => {
 //     }
 // }
 
+
 function canMove() {
     let type = selectedPiece.getAttribute('type')
-    if (selectedPiece.classList.contains('black')) {
+    let dir = turn == 'white' ? 1 : -1
+
+    if (selectedPiece.classList.contains(turn)) {
         switch (type) {
             case 'rook':
                 return (src.x === dest.x || src.y === dest.y);
@@ -231,34 +245,10 @@ function canMove() {
                 return (Math.abs(src.x - dest.x) <= 1 && Math.abs(src.y - dest.y) <= 1);
 
             case 'pawn':
+                // if ((board[dest.x][dest.y] !== null && board[dest.x][dest.y][0] !== turn[0]) && (Math.abs(src.x - dest.x) === Math.abs(src.y - dest.y))) return true
                 if (src.y !== dest.y) return false;
-                if (src.x === 1 && src.x - dest.x === -2) return true;
-                if (src.x - dest.x === -1) return true;
-                return false;
-        }
-    } else if (selectedPiece.classList.contains('white')) {
-        switch (type) {
-            case 'rook':
-                return (src.x === dest.x || src.y === dest.y);
-
-            case 'knight':
-                const dx = Math.abs(src.x - dest.x);
-                const dy = Math.abs(src.y - dest.y);
-                return (dx === 2 && dy === 1) || (dx === 1 && dy === 2);
-
-            case 'bishop':
-                return Math.abs(src.x - dest.x) === Math.abs(src.y - dest.y);
-
-            case 'queen':
-                return (src.x === dest.x || src.y === dest.y) || Math.abs(src.x - dest.x) === Math.abs(src.y - dest.y);
-
-            case 'king':
-                return (Math.abs(src.x - dest.x) <= 1 && Math.abs(src.y - dest.y) <= 1);
-
-            case 'pawn':
-                if (src.y !== dest.y) return false;
-                if (src.x === 6 && src.x - dest.x === 2) return true;
-                if (src.x - dest.x === 1) return true;
+                if (src.x === (turn == 'white' ? 6 : 1) && src.x - dest.x === 2 * dir) return true;
+                if (src.x - dest.x === 1 * dir) return true;
                 return false;
         }
     }
