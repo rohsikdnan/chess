@@ -183,6 +183,10 @@ function isLegalMove() {
 }
 
 
+// window.onresize = ()=>{
+//     document.body.style.setProperty('--size',`calc(100% - 10vmin)`)
+// }
+
 function clg(s) {
     return console.log(s)
 }
