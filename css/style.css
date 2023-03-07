@@ -5,7 +5,7 @@
 }
 
 :root {
-    --size: 60vmin;
+    --size: 70vmin;
 }
 
 body {
@@ -115,8 +115,13 @@ main {
 }
 
 
-@media (width<400px) {
+@media (width<800px) {
     :root {
-        --size: 80vmin;
+        --size: 90vmin;
     }
 }
+/* @media (width<400px) {
+    :root {
+        --size: 90vmin;
+    }
+} */
