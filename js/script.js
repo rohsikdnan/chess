@@ -72,13 +72,10 @@ squares.forEach((square, index) => {
                 }
                 console.log('src', src)
             }
-
-
         } else if (selectedPiece === piece) {
             square.classList.remove("selected");
             selectedPiece = null;
-        }
-        else {
+        } else {
             dest = {
                 x: i,
                 y: j
@@ -87,7 +84,7 @@ squares.forEach((square, index) => {
             console.log('dest', dest)
             if (canMove() && isLegalMove()) {
                 if (piece && piece.classList.contains(player)) return
-              
+
                 // console.log(selectedPiece)
                 const fromSquare = selectedPiece.closest(".square");
                 square.innerHTML = '';
@@ -102,13 +99,12 @@ squares.forEach((square, index) => {
                 // clg(board)
             }
         }
-
     })
 })
 
 function checkWinner() {
-    let king = document.querySelector(`.${player==='white'?'black':'white'}.king`)
-    if(!king) alert(player + "has won")
+    let king = document.querySelector(`.${player === 'white' ? 'black' : 'white'}.king`)
+    if (!king) alert(player + "has won")
 }
 
 function switchPlayer() {
