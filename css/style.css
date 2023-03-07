@@ -15,6 +15,25 @@ body {
     align-items: center;
 }
 
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#currentPlayer {
+    display: inline-block;
+    width: calc((var(--size)) / 10);
+    height: calc((var(--size)) / 10);
+    background-size: cover !important;
+}
+
 #board {
     width: var(--size);
     height: var(--size);
@@ -39,36 +58,47 @@ body {
 .black.rook {
     background: url(../img/br.png);
 }
+
 .black.knight {
     background: url(../img/bn.png);
 }
+
 .black.bishop {
     background: url(../img/bb.png);
 }
+
 .black.queen {
     background: url(../img/bq.png);
 }
+
 .black.king {
     background: url(../img/bk.png);
 }
+
 .black.pawn {
     background: url(../img/bp.png);
 }
+
 .white.rook {
     background: url(../img/wr.png);
 }
+
 .white.knight {
     background: url(../img/wn.png);
 }
+
 .white.bishop {
     background: url(../img/wb.png);
 }
+
 .white.queen {
     background: url(../img/wq.png);
 }
+
 .white.king {
     background: url(../img/wk.png);
 }
+
 .white.pawn {
     background: url(../img/wp.png);
 }
@@ -79,6 +109,7 @@ body {
     height: 100%;
     background-size: cover !important;
 }
+
 /* .piece.black{
     transform: rotate(180deg);
 } */

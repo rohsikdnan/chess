@@ -1,10 +1,10 @@
-// Create the chess board
+
 const chessBoard = document.getElementById('board');
 let selectedPiece = null;
-// Create the chess pieces
+
 const pcs = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
 let src, dest;
-let turn = 'white'
+let player = 'white'
 
 const board = [
     ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
@@ -63,7 +63,7 @@ squares.forEach((square, index) => {
         if (!piece && !selectedPiece) return;
 
         if (!selectedPiece) {
-            if (piece.classList.contains(turn)) {
+            if (piece.classList.contains(player)) {
                 selectedPiece = piece;
                 square.classList.add('selected')
                 src = {
@@ -86,9 +86,8 @@ squares.forEach((square, index) => {
 
             console.log('dest', dest)
             if (canMove() && isLegalMove()) {
-                if (piece && piece.classList.contains(turn)) return
-                if (selectedPiece.classList.contains('pawn') && piece && !piece.classList.contains(turn)) return
-
+                if (piece && piece.classList.contains(player)) return
+              
                 // console.log(selectedPiece)
                 const fromSquare = selectedPiece.closest(".square");
                 square.innerHTML = '';
@@ -97,8 +96,8 @@ squares.forEach((square, index) => {
                 selectedPiece = null;
                 board[dest.x][dest.y] = board[src.x][src.y];
                 board[src.x][src.y] = null;
-                turn = (turn === 'white') ? 'black' : 'white';
-                clg(turn)
+                switchPlayer()
+                clg(player)
                 // clg(board)
             }
         }
@@ -107,125 +106,25 @@ squares.forEach((square, index) => {
 })
 
 function checkMate() {
-    let king = document.querySelector(`${turn}.king`)
+    let king = document.querySelector(`${player}.king`)
 }
 
-
-// const pieces = {
-//     R: {
-//         type: 'rook',
-//         color: 'black',
-//         canMove: (src, dest) => {
-//             return (src.x === dest.x || src.y === dest.y);
-//         }
-//     },
-//     N: {
-//         type: 'knight',
-//         color: 'black',
-//         canMove: (src, dest) => {
-//             const dx = Math.abs(src.x - dest.x);
-//             const dy = Math.abs(src.y - dest.y);
-//             return (dx === 2 && dy === 1) || (dx === 1 && dy === 2);
-//         }
-//     },
-//     B: {
-//         type: 'bishop',
-//         color: 'black',
-//         canMove: (src, dest) => {
-//             return Math.abs(src.x - dest.x) === Math.abs(src.y - dest.y);
-//         }
-//     },
-//     Q: {
-//         type: 'queen',
-//         color: 'black',
-//         canMove: (src, dest) => {
-//             return (src.x === dest.x || src.y === dest.y) || Math.abs(src.x - dest.x) === Math.abs(src.y - dest.y);
-//         }
-//     },
-//     K: {
-//         type: 'king',
-//         color: 'black',
-//         canMove: (src, dest) => {
-//             return (Math.abs(src.x - dest.x) <= 1 && Math.abs(src.y - dest.y) <= 1);
-//         }
-//     },
-//     P: {
-//         type: 'pawn',
-//         color: 'black',
-//         canMove: (src, dest) => {
-//             if (src.y !== dest.y) return false;
-//             if (src.x === 1 && src.x - dest.x === -2) return true;
-//             if (src.x - dest.x === -1) return true;
-//             return false;
-//         }
-//     },
-//     p: {
-//         type: 'pawn',
-//         color: 'white',
-//         canMove: (src, dest) => {
-//             if (src.y !== dest.y) return false;
-//             if (src.x === 1 && src.x - dest.x === 2) return true;
-//             if (src.x - dest.x === 1) return true;
-//             return false;
-//         }
-//     },
-
-
-//     r: {
-//         type: 'rook',
-//         color: 'white',
-//         canMove: (src, dest) => {
-//             return (src.x === dest.x || src.y === dest.y);
-//         }
-//     },
-//     n: {
-//         type: 'knight',
-//         color: 'white',
-//         canMove: (src, dest) => {
-//             const dx = Math.abs(src.x - dest.x);
-//             const dy = Math.abs(src.y - dest.y);
-//             return (dx === 2 && dy === 1) || (dx === 1 && dy === 2);
-//         }
-//     },
-//     b: {
-//         type: 'bishop',
-//         color: 'white',
-//         canMove: (src, dest) => {
-//             return Math.abs(src.x - dest.x) === Math.abs(src.y - dest.y);
-//         }
-//     },
-//     q: {
-//         type: 'queen',
-//         color: 'white',
-//         canMove: (src, dest) => {
-//             return (src.x === dest.x || src.y === dest.y) || Math.abs(src.x - dest.x) === Math.abs(src.y - dest.y);
-//         }
-//     },
-//     k: {
-//         type: 'king',
-//         color: 'white',
-//         canMove: (src, dest) => {
-//             return (Math.abs(src.x - dest.x) <= 1 && Math.abs(src.y - dest.y) <= 1);
-//         }
-//     },
-//     p: {
-//         type: 'pawn',
-//         color: 'white',
-//         canMove: (src, dest) => {
-//             if (src.y !== dest.y) return false;
-//             if (src.x === 1 && src.x - dest.x === 2) return true;
-//             if (src.x - dest.x === 1) return true;
-//             return false;
-//         }
-//     }
-// }
-
+function switchPlayer() {
+    let cPlayer = document.getElementById('currentPlayer')
+    if (player === 'white') {
+        player = 'black';
+    }
+    else {
+        player = 'white'
+    }
+    cPlayer.className = player + " king"
+}
 
 function canMove() {
     let type = selectedPiece.getAttribute('type')
-    let dir = turn == 'white' ? 1 : -1
+    let dir = player == 'white' ? 1 : -1
 
-    if (selectedPiece.classList.contains(turn)) {
+    if (selectedPiece.classList.contains(player)) {
         switch (type) {
             case 'rook':
                 return (src.x === dest.x || src.y === dest.y);
@@ -245,10 +144,16 @@ function canMove() {
                 return (Math.abs(src.x - dest.x) <= 1 && Math.abs(src.y - dest.y) <= 1);
 
             case 'pawn':
-                // if ((board[dest.x][dest.y] !== null && board[dest.x][dest.y][0] !== turn[0]) && (Math.abs(src.x - dest.x) === Math.abs(src.y - dest.y))) return true
+                let piece = squares[dest.x * 8 + dest.y].querySelector('.piece');
+
+                if (((src.x - dest.x) === 1 * dir) && (Math.abs(src.y - dest.y) === 1) && piece && !piece.classList.contains(player)) return true
+
                 if (src.y !== dest.y) return false;
-                if (src.x === (turn == 'white' ? 6 : 1) && src.x - dest.x === 2 * dir) return true;
-                if (src.x - dest.x === 1 * dir) return true;
+                if (src.x === (player == 'white' ? 6 : 1) && src.x - dest.x === 2 * dir) return true;
+                if ((src.x - dest.x === 1 * dir)) {
+                    if (piece) return false;
+                    return true;
+                }
                 return false;
         }
     }
@@ -276,25 +181,6 @@ function isLegalMove() {
 
     return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 function clg(s) {
