@@ -96,6 +96,7 @@ squares.forEach((square, index) => {
                 selectedPiece = null;
                 board[dest.x][dest.y] = board[src.x][src.y];
                 board[src.x][src.y] = null;
+                checkWinner()
                 switchPlayer()
                 clg(player)
                 // clg(board)
@@ -105,8 +106,9 @@ squares.forEach((square, index) => {
     })
 })
 
-function checkMate() {
-    let king = document.querySelector(`${player}.king`)
+function checkWinner() {
+    let king = document.querySelector(`.${player==='white'?'black':'white'}.king`)
+    if(!king) alert(player + "has won")
 }
 
 function switchPlayer() {
