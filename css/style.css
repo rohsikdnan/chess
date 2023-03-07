@@ -110,9 +110,9 @@ main {
     background-size: cover !important;
 }
 
-/* .piece.black{
+.piece.black{
     transform: rotate(180deg);
-} */
+}
 
 
 @media (width<400px) {
