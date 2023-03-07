@@ -4,7 +4,7 @@ let selectedPiece = null;
 
 const pcs = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
 let src, dest;
-let player = 'white'
+let player = 'white';
 
 const board = [
     ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
@@ -49,7 +49,6 @@ for (let i = 0; i < 8; i++) {
         row.appendChild(square);
     }
 }
-
 
 let squares = document.querySelectorAll('.square')
 
@@ -180,10 +179,6 @@ function isLegalMove() {
     return true;
 }
 
-
-// window.onresize = ()=>{
-//     document.body.style.setProperty('--size',`calc(100% - 10vmin)`)
-// }
 
 function clg(s) {
     return console.log(s)
