@@ -53,6 +53,7 @@ main {
 
 .selected {
     background-color: yellow !important;
+    background-color: #00ceff !important;
 }
 
 .black.rook {
