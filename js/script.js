@@ -36,9 +36,9 @@ document.querySelectorAll('.box').forEach(box => {
             box.classList.remove('selected');
             selectedPiece = '';
             document.querySelectorAll('.box').forEach(e => { e.classList.remove('legal'); e.classList.remove('show') });
-            // hasPiece = false
             return
         }
+        
         if (!selectedPiece) {
             if (box.getAttribute('piece').indexOf(player) >= 0) {
                 selectPiece(box);
