@@ -53,16 +53,26 @@ document.querySelectorAll('.box').forEach(box => {
                 document.querySelectorAll('.box').forEach(e => { e.classList.remove('legal'); e.classList.remove('show') });
                 selectPiece(box);
             } else if (box.classList.contains('legal')) {
+
                 box.setAttribute('piece', color + '-' + type);
                 box.classList.add('placed');
                 delPiece();
 
                 switchPlayer();
+                checkWinning()
                 document.querySelectorAll('.box').forEach(e => { e.classList.remove('legal'); e.classList.remove('show') });
             }
         }
     }
 })
+
+function checkWinning() {
+    if (!$('[piece=' + player + '-king]')) {
+        setTimeout(() => {
+            alert(player === 'white' ? 'black' : 'white' + ' has won')
+        }, 1000);
+    }
+}
 
 function selectPiece(box) {
     box.classList.add('selected');
@@ -75,6 +85,14 @@ function delPiece() {
     selectedPiece.classList.remove('placed');
     selectedPiece.classList.remove('selected');
     selectedPiece = '';
+}
+
+function findLegalMoves(nextMoves) {
+    for (var move of nextMoves) {
+        var box = $('#box-' + move[0] + '-' + move[1]);
+        box.classList.add('legal');
+        if (suggestion) box.classList.add('show')
+    }
 }
 
 function getMoves() {
@@ -174,12 +192,6 @@ function getPawnMoves(i, j, color, moves) {
     return nextMoves;
 }
 
-$('#suggest').onchange = () => {
-    suggestion = suggestion ? false : true
-    document.querySelectorAll('.legal').forEach(e => {
-        suggestion ? e.classList.add('show') : e.classList.remove('show')
-    });
-}
 
 function getQueenMoves(i, j, color, moves) {
     var nextMoves = [];
@@ -222,17 +234,16 @@ function getKnightMoves(i, j, color, moves) {
     return nextMoves;
 }
 
-
 function outOfBounds(i, j) {
     return (i < 0 || i >= 8 || j < 0 || j >= 8);
 }
 
-function findLegalMoves(nextMoves) {
-    for (var move of nextMoves) {
-        var box = $('#box-' + move[0] + '-' + move[1]);
-        box.classList.add('legal');
-        if (suggestion) box.classList.add('show')
-    }
+
+$('#suggest').onchange = () => {
+    suggestion = suggestion ? false : true
+    document.querySelectorAll('.legal').forEach(e => {
+        suggestion ? e.classList.add('show') : e.classList.remove('show')
+    });
 }
 
 function switchPlayer() {
