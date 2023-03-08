@@ -86,9 +86,9 @@ main {
     width: var(--size);
     height: var(--size);
     display: grid;
-    grid-template-columns: repeat(8, calc((var(--size) - 2px) / 8));
-    grid-template-rows: repeat(8, calc((var(--size) - 2px) / 8));
-    border: 1px solid #000;
+    grid-template-columns: repeat(8, calc((var(--size)) / 8));
+    grid-template-rows: repeat(8, calc((var(--size)) / 8));
+    box-shadow: 0 0 0 10px rgb(0 0 0 /25%);
 }
 
 .legal.show {
