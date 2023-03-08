@@ -163,7 +163,6 @@ function getMoves() {
     return nextMoves;
 }
 
-
 function getPawnMoves(i, j, color, moves) {
     var nextMoves = [];
     for (var index = 0; index < moves.length; index++) {
@@ -191,7 +190,6 @@ function getPawnMoves(i, j, color, moves) {
     }
     return nextMoves;
 }
-
 
 function getQueenMoves(i, j, color, moves) {
     var nextMoves = [];
@@ -238,7 +236,6 @@ function outOfBounds(i, j) {
     return (i < 0 || i >= 8 || j < 0 || j >= 8);
 }
 
-
 $('#suggest').onchange = () => {
     suggestion = suggestion ? false : true
     document.querySelectorAll('.legal').forEach(e => {
@@ -247,7 +244,6 @@ $('#suggest').onchange = () => {
 }
 
 function switchPlayer() {
-    let cPlayer = document.getElementById('currentPlayer');
     player = player === 'white' ? 'black' : 'white';
     // if (player === 'white') {
     //     player = 'black';
@@ -255,7 +251,7 @@ function switchPlayer() {
     // else {
     //     player = 'white'
     // }
-    cPlayer.className = player;
+    $('#currentPlayer').className = player;
 }
 
 
