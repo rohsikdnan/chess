@@ -114,7 +114,9 @@ main {
     background-color: yellow !important;
     background-color: #00ceff !important;
 }
-
+.error{
+    box-shadow: 0 0 2px 2px red;
+}
 [piece^=black] {
     transform: rotate(180deg);
 }
