@@ -5,6 +5,9 @@ let selectedPiece = '';
 let hasPiece = false;
 let check = false;
 let suggestion = true;
+let checkMoves = [];
+let historyMoves = [];
+let moveNumber = 0;
 
 function setupBoard() {
     board.innerHTML = '';
@@ -13,16 +16,16 @@ function setupBoard() {
             let div = document.createElement('div');
             div.setAttribute('piece', '');
             div.classList.add('box');
-            div.id = 'box' + '-' + i + '-' + j;
+            div.id = `box-${i}-${j}`;
 
             div.classList.add(((i + j) % 2 !== 0) ? 'light' : 'dark');
 
-            if (i == 0 || i == 7) {
-                div.setAttribute('piece', `${i == 0 ? 'black' : 'white'}-${pcs[j]}`);
+            if (i === 0 || i === 7) {
+                div.setAttribute('piece', `${i === 0 ? 'black' : 'white'}-${pcs[j]}`);
                 div.classList.add('placed');
             }
-            if (i == 1 || i == 6) {
-                div.setAttribute('piece', `${i == 1 ? 'black' : 'white'}-pawn`);
+            if (i === 1 || i === 6) {
+                div.setAttribute('piece', `${i === 1 ? 'black' : 'white'}-pawn`);
                 div.classList.add('placed');
             }
             board.appendChild(div);
@@ -33,13 +36,12 @@ function setupBoard() {
 document.querySelectorAll('.box').forEach(box => {
     box.onclick = () => {
         if (box.classList.contains('selected')) {
-            box.classList.remove('selected');
-            selectedPiece = '';
-            document.querySelectorAll('.box').forEach(e => { e.classList.remove('legal'); e.classList.remove('show') });
+            removeSelection();
             return
         }
-        
+
         if (!selectedPiece) {
+            if (check) findCheckMoves(box)
             if (box.getAttribute('piece').indexOf(player) >= 0) {
                 selectPiece(box);
             }
@@ -49,36 +51,145 @@ document.querySelectorAll('.box').forEach(box => {
             let type = a[1];
 
             if (box.getAttribute('piece').indexOf(color) >= 0) {
-                selectedPiece.classList.remove('selected');
-                document.querySelectorAll('.box').forEach(e => { e.classList.remove('legal'); e.classList.remove('show') });
+                removeSelection();
                 selectPiece(box);
             } else if (box.classList.contains('legal')) {
-
-                box.setAttribute('piece', color + '-' + type);
-                box.classList.add('placed');
-                delPiece();
-
+                let move = {
+                    pre:{
+                        box:selectedPiece.id,
+                        piece:selectedPiece.getAttribute('piece')
+                    },
+                    curr:{
+                        box:box.id,
+                        piece:box.getAttribute('piece')
+                    }
+                }
+                historyMoves.push(move);
+                moveNumber++;
+                localStorage.setItem('historyMoves',JSON.stringify(historyMoves))
+                // console.log(historyMoves,moveNumber)
+                setPiece(box, color, type)
                 switchPlayer();
+                isCheck(box.id)
+                delPiece();
                 checkWinning()
-                document.querySelectorAll('.box').forEach(e => { e.classList.remove('legal'); e.classList.remove('show') });
+                removeSuggestion();
             }
         }
     }
-})
+});
+
+$('#undo').onclick=()=>{
+    if(moveNumber === 0) return
+    moveNumber--;
+ 
+    let move = historyMoves[moveNumber]
+    let pre = move.pre;
+    setPiece($('#'+pre.box),pre.piece.split('-')[0],pre.piece.split('-')[1])
+
+    let current = move.curr;
+    if(current.piece === ''){
+        let box = $('#'+current.box);
+        box.setAttribute('piece','');
+        box.classList.remove('placed')
+
+    }else{
+        setPiece($('#' + current.box), current.piece.split('-')[0], current.piece.split('-')[1]);
+    }
+
+    // removeSuggestion()
+    switchPlayer()
+    // console.log(historyMoves,moveNumber)
+    localStorage.setItem('historyMoves',JSON.stringify(historyMoves))
+}
+
+$('#redo').onclick=()=>{
+    if(moveNumber === historyMoves.length) return
+ 
+    let move = historyMoves[moveNumber]
+ 
+    let pre = move.pre;
+
+    selectedPiece = $('#'+pre.box);
+    let current = move.curr;
+    
+    setPiece($('#'+current.box),pre.piece.split('-')[0],pre.piece.split('-')[1])
+    delPiece();
+    switchPlayer()
+
+    moveNumber++;
+    // console.log(historyMoves,moveNumber)
+    localStorage.setItem('historyMoves',JSON.stringify(historyMoves))
+}
+
 
 function checkWinning() {
     if (!$('[piece=' + player + '-king]')) {
         setTimeout(() => {
-            alert(player === 'white' ? 'black' : 'white' + ' has won')
+            alert(`${player === 'white' ? 'black' : 'white'} has won`)
         }, 1000);
     }
+}
+
+function findCheckMoves(box) {
+    let a = box.getAttribute('piece').split('-');
+    let color = a[0];
+    let type = a[1];
+
+    let b = box.id.split('-');
+    let i = parseInt(b[1]);
+    let j = parseInt(b[2]);
+}
+
+function isCheck(id) {
+
+    let moves = getMoves($('#' + id));
+    // console.log($('#'+id).getAttribute('piece'))
+    for (let move of moves) {
+        let box = $('#box-' + move[0] + '-' + move[1]);
+        // console.log(box)
+        // let a = box.getAttribute('piece')==player + '-king'
+        // console.log(a)
+
+        if (box.getAttribute('piece') === player + '-king') {
+            check = true
+            box.classList.add('error')
+            checkMoves = moves;
+            // console.log(checkMoves)
+            return
+        }
+
+        if (box.getAttribute('piece') === player + '-king') {
+
+        }
+    }
+    check = false
 }
 
 function selectPiece(box) {
     box.classList.add('selected');
     selectedPiece = box;
-    findLegalMoves(getMoves());
+    findLegalMoves(getMoves(selectedPiece));
 }
+
+function removeSelection() {
+    selectedPiece.classList.remove('selected');
+    selectedPiece = '';
+    removeSuggestion();
+}
+
+function removeSuggestion() {
+    document.querySelectorAll('.box').forEach(e => {
+        e.classList.remove('legal');
+        e.classList.remove('show')
+    });
+}
+
+function setPiece(box, color, type) {
+    box.setAttribute('piece', color + '-' + type);
+    box.classList.add('placed');
+}
+
 
 function delPiece() {
     selectedPiece.setAttribute('piece', '');
@@ -95,12 +206,13 @@ function findLegalMoves(nextMoves) {
     }
 }
 
-function getMoves() {
-    let a = selectedPiece.getAttribute('piece').split('-');
+function getMoves(box = selectedPiece) {
+    let a = box.getAttribute('piece').split('-');
+    // console.log(box.getAttribute('piece'))
     let color = a[0];
     let type = a[1];
 
-    let b = selectedPiece.id.split('-');
+    let b = box.id.split('-');
     let i = parseInt(b[1]);
     let j = parseInt(b[2]);
 
@@ -140,14 +252,10 @@ function getMoves() {
             nextMoves = getQueenMoves(i, j, color, moves);
             break;
         case 'queen':
-            var moves1 = [
-                [1, 1], [1, -1], [-1, 1], [-1, -1]
+            moves = [
+                [1, 1], [1, -1], [-1, 1], [-1, -1], [0, 1], [0, -1], [1, 0], [-1, 0]
             ];
-            var moves2 = [
-                [0, 1], [0, -1], [1, 0], [-1, 0]
-            ];
-            nextMoves = getQueenMoves(i, j, color, moves1)
-                .concat(getQueenMoves(i, j, color, moves2));
+            nextMoves = getQueenMoves(i, j, color, moves)
             break;
         case 'king':
             moves = [
@@ -242,6 +350,8 @@ $('#suggest').onchange = () => {
         suggestion ? e.classList.add('show') : e.classList.remove('show')
     });
 }
+
+
 
 function switchPlayer() {
     player = player === 'white' ? 'black' : 'white';
