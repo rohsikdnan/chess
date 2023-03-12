@@ -84,11 +84,12 @@ main {
     margin: auto 10px;
 } */
 
-#undo,#redo{
+#undo,
+#redo {
     border: 1px solid #8aaeb7;
     padding: 2px 8px;
     text-transform: uppercase;
- 
+
 }
 
 #board {
@@ -122,9 +123,11 @@ main {
     background-color: yellow !important;
     background-color: #00ceff !important;
 }
-.error{
+
+.error {
     box-shadow: 0 0 2px 2px red;
 }
+
 [piece^=black] {
     transform: rotate(180deg);
 }
