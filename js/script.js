@@ -64,10 +64,14 @@ document.querySelectorAll('.box').forEach(box => {
                         piece: box.getAttribute('piece')
                     }
                 }
-                historyMoves.push(move);
+                if (moveNumber === historyMoves.length) {
+                    historyMoves.push(move);
+                } else {
+                    historyMoves[moveNumber] = move
+                }
                 moveNumber++;
                 localStorage.setItem('historyMoves', JSON.stringify(historyMoves))
-                // console.log(historyMoves,moveNumber)
+                console.log(historyMoves, moveNumber)
                 setPiece(box, color, type)
                 switchPlayer();
                 isCheck(box.id)
@@ -99,7 +103,7 @@ $('#undo').onclick = () => {
 
     // removeSuggestion()
     switchPlayer()
-    // console.log(historyMoves,moveNumber)
+    console.log(historyMoves, moveNumber)
     localStorage.setItem('historyMoves', JSON.stringify(historyMoves))
 }
 
@@ -118,10 +122,9 @@ $('#redo').onclick = () => {
     switchPlayer()
 
     moveNumber++;
-    // console.log(historyMoves,moveNumber)
+    console.log(historyMoves, moveNumber)
     localStorage.setItem('historyMoves', JSON.stringify(historyMoves))
 }
-
 
 function checkWinning() {
     if (!$('[piece=' + player + '-king]')) {
