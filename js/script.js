@@ -55,18 +55,18 @@ document.querySelectorAll('.box').forEach(box => {
                 selectPiece(box);
             } else if (box.classList.contains('legal')) {
                 let move = {
-                    pre:{
-                        box:selectedPiece.id,
-                        piece:selectedPiece.getAttribute('piece')
+                    pre: {
+                        box: selectedPiece.id,
+                        piece: selectedPiece.getAttribute('piece')
                     },
-                    curr:{
-                        box:box.id,
-                        piece:box.getAttribute('piece')
+                    curr: {
+                        box: box.id,
+                        piece: box.getAttribute('piece')
                     }
                 }
                 historyMoves.push(move);
                 moveNumber++;
-                localStorage.setItem('historyMoves',JSON.stringify(historyMoves))
+                localStorage.setItem('historyMoves', JSON.stringify(historyMoves))
                 // console.log(historyMoves,moveNumber)
                 setPiece(box, color, type)
                 switchPlayer();
@@ -79,47 +79,47 @@ document.querySelectorAll('.box').forEach(box => {
     }
 });
 
-$('#undo').onclick=()=>{
-    if(moveNumber === 0) return
+$('#undo').onclick = () => {
+    if (moveNumber === 0) return
     moveNumber--;
- 
+
     let move = historyMoves[moveNumber]
     let pre = move.pre;
-    setPiece($('#'+pre.box),pre.piece.split('-')[0],pre.piece.split('-')[1])
+    setPiece($('#' + pre.box), pre.piece.split('-')[0], pre.piece.split('-')[1])
 
     let current = move.curr;
-    if(current.piece === ''){
-        let box = $('#'+current.box);
-        box.setAttribute('piece','');
+    if (current.piece === '') {
+        let box = $('#' + current.box);
+        box.setAttribute('piece', '');
         box.classList.remove('placed')
 
-    }else{
+    } else {
         setPiece($('#' + current.box), current.piece.split('-')[0], current.piece.split('-')[1]);
     }
 
     // removeSuggestion()
     switchPlayer()
     // console.log(historyMoves,moveNumber)
-    localStorage.setItem('historyMoves',JSON.stringify(historyMoves))
+    localStorage.setItem('historyMoves', JSON.stringify(historyMoves))
 }
 
-$('#redo').onclick=()=>{
-    if(moveNumber === historyMoves.length) return
- 
+$('#redo').onclick = () => {
+    if (moveNumber === historyMoves.length) return
+
     let move = historyMoves[moveNumber]
- 
+
     let pre = move.pre;
 
-    selectedPiece = $('#'+pre.box);
+    selectedPiece = $('#' + pre.box);
     let current = move.curr;
-    
-    setPiece($('#'+current.box),pre.piece.split('-')[0],pre.piece.split('-')[1])
+
+    setPiece($('#' + current.box), pre.piece.split('-')[0], pre.piece.split('-')[1])
     delPiece();
     switchPlayer()
 
     moveNumber++;
     // console.log(historyMoves,moveNumber)
-    localStorage.setItem('historyMoves',JSON.stringify(historyMoves))
+    localStorage.setItem('historyMoves', JSON.stringify(historyMoves))
 }
 
 
